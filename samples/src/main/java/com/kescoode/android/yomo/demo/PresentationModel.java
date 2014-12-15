@@ -43,7 +43,7 @@ public class PresentationModel implements HasPresentationModelChangeSupport {
             @Override
             public void done(Object result) {
                 if (null == result) {
-                    Log.e("hahah", "nimabe");
+                    Log.e("hahah", "test");
                 }
                 changeSupport.firePropertyChange("result");
             }
@@ -52,7 +52,7 @@ public class PresentationModel implements HasPresentationModelChangeSupport {
         TaskSet<Integer> next = new TaskSet<Integer>() {
             @Override
             public Integer background() throws Exception {
-//                throwFailed(new Exception("nimabe"));
+//                throwFailed(new Exception("test"));
                 return 1000;
             }
         };

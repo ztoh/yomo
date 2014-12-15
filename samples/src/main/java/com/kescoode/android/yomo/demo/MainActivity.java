@@ -6,11 +6,6 @@ import android.view.View;
 
 import org.robobinding.binder.Binders;
 
-/**
- * @author Cheng Wei
- * @version $Revision: 1.0 $
- * @since 1.0
- */
 public class MainActivity extends Activity {
 
     @Override

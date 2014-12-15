@@ -37,7 +37,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:21.0.2'
+    compile 'com.android.support:appcompat-v7:21.0.3'
 
     // RoboBinding
     compile("org.robobinding:robobinding:0.8.9:with-dependencies") {
@@ -45,5 +45,6 @@ dependencies {
     }
     apt "org.robobinding:codegen:0.8.9"
 
-    compile project(':library')
+//    compile project(':library')
+    compile 'com.kescoode:yomo:0.1.0-SNAPSHOT'
 }
