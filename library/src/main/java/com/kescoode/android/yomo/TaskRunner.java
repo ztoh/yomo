@@ -23,6 +23,11 @@ import java.util.concurrent.RejectedExecutionException;
     @Override
     public void run() {
         android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+        mDelivery.postRemove(mTask);
+
+        if (mTask.isCanceled()) {
+            return;
+        }
         try {
             Object result = mTask.run();
             mDelivery.postDone(mTask, result);
@@ -31,7 +36,7 @@ import java.util.concurrent.RejectedExecutionException;
             mDelivery.postFail(mTask, error);
         }
 
-        if (null != mTask.next()) {
+        if (null != mTask.next() && !mTask.isCanceled()) {
             try {
                 mDelivery.postNext(mTask);
             } catch (RejectedExecutionException e) {

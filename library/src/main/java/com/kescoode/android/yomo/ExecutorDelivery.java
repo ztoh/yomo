@@ -23,7 +23,7 @@ import java.util.concurrent.RejectedExecutionException;
             @Override
             public void execute(Runnable command) {
                 if (command instanceof DelayedRunner) {
-                    postToUi((DelayedRunner)command);
+                    postToUi((DelayedRunner) command);
                 } else {
                     throw new RuntimeException("Command is not a delayedRunner");
                 }
@@ -42,7 +42,15 @@ import java.util.concurrent.RejectedExecutionException;
     }
 
     @Override
+    public void postRemove(TaskSet set) {
+        mQueue.finish(set);
+    }
+
+    @Override
     public <T> void postDone(TaskSet<T> set, final T args) {
+        if (set.isCanceled()) {
+            return;
+        }
         mPostExecutor.execute(new DelayedRunner(set) {
             @Override
             public void run() {
@@ -64,7 +72,7 @@ import java.util.concurrent.RejectedExecutionException;
     @Override
     public void postNext(TaskSet set) throws RejectedExecutionException {
         TaskSet next = set.next();
-        mQueue.add(next);
+        mQueue.add(next, set.getTag());
     }
 
     private abstract class DelayedRunner implements Runnable {

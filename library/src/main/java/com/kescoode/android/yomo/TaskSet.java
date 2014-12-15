@@ -33,13 +33,15 @@ public class TaskSet<T> {
     }
 
     private TaskSet mNext = null;
-    private Future mControl = null;
+    private volatile Future mControl = null;
     private PrepareTask mPrepareTask = null;
     private BackgroundTask<T> mBackgroundTask = null;
     private UiDoneCallBack<T> mDoneCallBack = null;
     private UiFailCallBack mFailCallBack = null;
 
     private long mDelayMillisecond = 0L;
+    private volatile boolean mCanceled = false;
+    private Object mTag;
 
     protected TaskSet() {
         if (Looper.getMainLooper() != Looper.myLooper()) {
@@ -55,10 +57,18 @@ public class TaskSet<T> {
         }
     }
 
+    /**
+     * 有时候每个线程调度时间不一致，所以在想取消的时候有可能任务已经完成了或者还没进行
+     */
     public final void cancel() {
         if (null != mControl) {
             mControl.cancel(true);
         }
+        mCanceled = true;
+    }
+
+    /* package */ boolean isCanceled() {
+        return mCanceled;
     }
 
     /**
@@ -138,4 +148,11 @@ public class TaskSet<T> {
         mControl = future;
     }
 
+    /* package */ void setTag(Object tag) {
+        mTag = tag;
+    }
+
+    /* package */ Object getTag() {
+        return mTag;
+    }
 }

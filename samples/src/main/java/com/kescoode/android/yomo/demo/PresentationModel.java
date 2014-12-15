@@ -34,7 +34,7 @@ public class PresentationModel implements HasPresentationModelChangeSupport {
                 result = 0L;
                 index++;
                 for (int i = 0; i < index * 1000; i++) {
-                    result += 2* i;
+                    result += 2 * i;
                 }
                 return super.background();
             }
@@ -52,7 +52,7 @@ public class PresentationModel implements HasPresentationModelChangeSupport {
         TaskSet<Integer> next = new TaskSet<Integer>() {
             @Override
             public Integer background() throws Exception {
-                throwFailed(new Exception("nimabe"));
+//                throwFailed(new Exception("nimabe"));
                 return 1000;
             }
         };
@@ -69,9 +69,10 @@ public class PresentationModel implements HasPresentationModelChangeSupport {
                 error.getCauses()[0].printStackTrace();
             }
         });
-//        next.delay(10000L);
+        next.delay(10000L);
         task.next(next);
-        Yomo.add(task);
+        Yomo.add(task, this);
+//        task.cancel();
     }
 
     @Override

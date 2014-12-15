@@ -9,6 +9,8 @@ import java.util.concurrent.RejectedExecutionException;
  */
 /* package */ interface Delivery {
 
+    void postRemove(TaskSet set);
+
     /**
      * 成功之后的回调
      */

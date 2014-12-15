@@ -14,7 +14,7 @@ public class Yomo {
         /* Empty */
     }
 
-    public static void add(TaskSet task) {
-        QUEUE.add(task);
+    public static void add(TaskSet task,Object tag) {
+        QUEUE.add(task,tag);
     }
 }

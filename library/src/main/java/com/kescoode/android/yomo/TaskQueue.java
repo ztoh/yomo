@@ -1,5 +1,7 @@
 package com.kescoode.android.yomo;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
@@ -13,6 +15,7 @@ import java.util.concurrent.ThreadPoolExecutor;
     private static final String LOG_TAG = "TaskQueue";
 
     private final ThreadPoolExecutor mThreadPool;
+    private final Set<TaskSet<?>> mCurruntTasks = new HashSet<TaskSet<?>>();
     private Delivery mDelivery;
 
     private final Object mLock = new Object();
@@ -22,10 +25,28 @@ import java.util.concurrent.ThreadPoolExecutor;
         mDelivery = new ExecutorDelivery(this);
     }
 
-    public void add(TaskSet task) {
-        synchronized (mLock) {
-            TaskRunner runner = new TaskRunner(task, mDelivery);
-            task.control(mThreadPool.submit(runner));
+    public void add(TaskSet task, Object tag) {
+        synchronized (mCurruntTasks) {
+            task.setTag(tag);
+            mCurruntTasks.add(task);
+        }
+        TaskRunner runner = new TaskRunner(task, mDelivery);
+        task.control(mThreadPool.submit(runner));
+    }
+
+    public void cancelAll(Object tag) {
+        synchronized (mCurruntTasks) {
+            for (TaskSet<?> task : mCurruntTasks) {
+                if (tag == task.getTag()) {
+                    task.cancel();
+                }
+            }
+        }
+    }
+
+    /* package */ void finish(TaskSet taskSet) {
+        synchronized (mCurruntTasks) {
+            mCurruntTasks.remove(taskSet);
         }
     }
 
