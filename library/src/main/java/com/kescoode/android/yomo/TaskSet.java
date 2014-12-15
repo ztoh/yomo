@@ -1,8 +1,6 @@
-package com.kescoode.android.yomo.toolbox;
+package com.kescoode.android.yomo;
 
 import android.os.Looper;
-
-import com.kescoode.android.yomo.YomoError;
 
 import java.util.concurrent.Future;
 
@@ -18,7 +16,7 @@ public class TaskSet<T> {
     }
 
     public static interface BackgroundTask<G> {
-        G background();
+        G background() throws Exception;
     }
 
     /**
@@ -34,18 +32,12 @@ public class TaskSet<T> {
         void fail(YomoError error);
     }
 
-    public static enum ExecutorType {
-        Serial, Concurrence
-    }
-
     private TaskSet mNext = null;
-    private Future mControl;
+    private Future mControl = null;
     private PrepareTask mPrepareTask = null;
     private BackgroundTask<T> mBackgroundTask = null;
     private UiDoneCallBack<T> mDoneCallBack = null;
     private UiFailCallBack mFailCallBack = null;
-
-    private ExecutorType mType = ExecutorType.Concurrence;
 
     private long mDelayMillisecond = 0L;
 
@@ -55,7 +47,7 @@ public class TaskSet<T> {
         }
     }
 
-    public final T run() {
+    public final T run() throws Exception {
         if (null == mBackgroundTask) {
             return background();
         } else {
@@ -64,13 +56,15 @@ public class TaskSet<T> {
     }
 
     public final void cancel() {
-
+        if (null != mControl) {
+            mControl.cancel(true);
+        }
     }
 
     /**
      * 子类可以重写该方法
      */
-    public T background() {
+    public T background() throws Exception {
         return null;
     }
 
@@ -81,7 +75,7 @@ public class TaskSet<T> {
         mBackgroundTask = task;
     }
 
-    public final void done(T result) {
+    /* package */ void done(T result) {
         if (null != mDoneCallBack) {
             mDoneCallBack.done(result);
         }
@@ -94,7 +88,7 @@ public class TaskSet<T> {
         mDoneCallBack = callBack;
     }
 
-    public final void fail(YomoError error) {
+    /* package */ void fail(YomoError error) {
         if (null != mFailCallBack) {
             mFailCallBack.fail(error);
         }
@@ -105,6 +99,14 @@ public class TaskSet<T> {
             throw new IllegalArgumentException("CallBack can not be null");
         }
         mFailCallBack = callBack;
+    }
+
+    public static final void throwFailed(Exception cause) throws Exception {
+        if (null == cause) {
+            throw new RuntimeException("Error thrown from user");
+        } else {
+            throw cause;
+        }
     }
 
     /**
@@ -119,7 +121,7 @@ public class TaskSet<T> {
     }
 
     /**
-     * 下一个执行{@link com.kescoode.android.yomo.toolbox.TaskSet}
+     * 下一个执行{@link TaskSet}
      */
     public final void next(TaskSet next) {
         if (null == next) {
@@ -128,20 +130,12 @@ public class TaskSet<T> {
         mNext = next;
     }
 
-    public final TaskSet next() {
+    /* package */ TaskSet next() {
         return mNext;
     }
 
-    public final void control(Future future) {
+    /* package */ void control(Future future) {
         mControl = future;
-    }
-
-    public final void type(ExecutorType type) {
-        mType = type;
-    }
-
-    public final ExecutorType type() {
-        return mType;
     }
 
 }

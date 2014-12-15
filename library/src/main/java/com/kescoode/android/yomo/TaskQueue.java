@@ -1,7 +1,5 @@
 package com.kescoode.android.yomo;
 
-import com.kescoode.android.yomo.toolbox.TaskSet;
-
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
@@ -10,40 +8,31 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @author Kesco Lin
  * @since 2014-12-03
  */
-public class TaskQueue {
+/* package */ class TaskQueue {
 
     private static final String LOG_TAG = "TaskQueue";
 
-    private final ThreadPoolExecutor mConcurrentPool;
-    private final ThreadPoolExecutor mSerialPool;
+    private final ThreadPoolExecutor mThreadPool;
     private Delivery mDelivery;
 
     private final Object mLock = new Object();
 
     public TaskQueue() {
-        mConcurrentPool = ThreadPoolTool.newCacheThreadPool();
-        mSerialPool = ThreadPoolTool.newSingleThreadPool();
+        mThreadPool = ThreadPoolTool.newCacheThreadPool();
         mDelivery = new ExecutorDelivery(this);
     }
 
     public void add(TaskSet task) {
         synchronized (mLock) {
             TaskRunner runner = new TaskRunner(task, mDelivery);
-            if (TaskSet.ExecutorType.Concurrence == task.type()) {
-                task.control(mConcurrentPool.submit(runner));
-            } else if (TaskSet.ExecutorType.Serial == task.type()) {
-                task.control(mSerialPool.submit(runner));
-            }
+            task.control(mThreadPool.submit(runner));
         }
     }
 
     public void shutdown() {
         synchronized (mLock) {
-            if (!mConcurrentPool.isShutdown()) {
-                mConcurrentPool.shutdownNow();
-            }
-            if (!mSerialPool.isShutdown()) {
-                mSerialPool.shutdownNow();
+            if (!mThreadPool.isShutdown()) {
+                mThreadPool.shutdownNow();
             }
         }
     }

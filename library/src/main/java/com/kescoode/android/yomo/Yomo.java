@@ -1,6 +1,4 @@
-package com.kescoode.android.yomo.toolbox;
-
-import com.kescoode.android.yomo.TaskQueue;
+package com.kescoode.android.yomo;
 
 /**
  * Yomo异步库开关类
@@ -16,8 +14,7 @@ public class Yomo {
         /* Empty */
     }
 
-    public static void concurrence(TaskSet task) {
-        task.type(TaskSet.ExecutorType.Concurrence);
+    public static void add(TaskSet task) {
         QUEUE.add(task);
     }
 }

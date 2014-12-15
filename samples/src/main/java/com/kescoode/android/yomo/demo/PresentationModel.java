@@ -2,8 +2,9 @@ package com.kescoode.android.yomo.demo;
 
 import android.util.Log;
 
-import com.kescoode.android.yomo.toolbox.TaskSet;
-import com.kescoode.android.yomo.toolbox.Yomo;
+import com.kescoode.android.yomo.TaskSet;
+import com.kescoode.android.yomo.Yomo;
+import com.kescoode.android.yomo.YomoError;
 
 import org.robobinding.presentationmodel.HasPresentationModelChangeSupport;
 import org.robobinding.presentationmodel.PresentationModelChangeSupport;
@@ -13,7 +14,6 @@ public class PresentationModel implements HasPresentationModelChangeSupport {
     private PresentationModelChangeSupport changeSupport;
     private static long index = 0L;
     private long result = 0L;
-    private String name = "";
 
     public PresentationModel() {
         changeSupport = new PresentationModelChangeSupport(this);
@@ -30,7 +30,7 @@ public class PresentationModel implements HasPresentationModelChangeSupport {
     public void runTask() {
         TaskSet task = new TaskSet() {
             @Override
-            public Object background() {
+            public Object background() throws Exception {
                 result = 0L;
                 index++;
                 for (int i = 0; i < index * 1000; i++) {
@@ -49,26 +49,29 @@ public class PresentationModel implements HasPresentationModelChangeSupport {
             }
         });
 
-        TaskSet next = new TaskSet() {
+        TaskSet<Integer> next = new TaskSet<Integer>() {
             @Override
-            public Object background() {
-                for (int i = 0; i < 1000; i++) {
-                    Log.e("nimabe", "test");
-                }
-                return super.background();
+            public Integer background() throws Exception {
+                throwFailed(new Exception("nimabe"));
+                return 1000;
             }
         };
-
-        next.done(new TaskSet.UiDoneCallBack() {
+        next.done(new TaskSet.UiDoneCallBack<Integer>() {
             @Override
-            public void done(Object args) {
-                result = 0L;
+            public void done(Integer args) {
+                result = args;
                 changeSupport.firePropertyChange("result");
             }
         });
-        next.delay(10000L);
+        next.fail(new TaskSet.UiFailCallBack() {
+            @Override
+            public void fail(YomoError error) {
+                error.getCauses()[0].printStackTrace();
+            }
+        });
+//        next.delay(10000L);
         task.next(next);
-        Yomo.concurrence(task);
+        Yomo.add(task);
     }
 
     @Override

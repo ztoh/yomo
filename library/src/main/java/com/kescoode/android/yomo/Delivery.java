@@ -1,7 +1,5 @@
 package com.kescoode.android.yomo;
 
-import com.kescoode.android.yomo.toolbox.TaskSet;
-
 import java.util.concurrent.RejectedExecutionException;
 
 /**
@@ -9,7 +7,7 @@ import java.util.concurrent.RejectedExecutionException;
  *
  * @author Kesco Lin
  */
-public interface Delivery {
+/* package */ interface Delivery {
 
     /**
      * 成功之后的回调

@@ -3,8 +3,6 @@ package com.kescoode.android.yomo;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.kescoode.android.yomo.toolbox.TaskSet;
-
 import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionException;
 
@@ -13,7 +11,7 @@ import java.util.concurrent.RejectedExecutionException;
  *
  * @author Kesco Lin
  */
-public class ExecutorDelivery implements Delivery {
+/* package */ class ExecutorDelivery implements Delivery {
 
     private final Handler mUiHandler;
     private final Executor mPostExecutor;
@@ -66,7 +64,6 @@ public class ExecutorDelivery implements Delivery {
     @Override
     public void postNext(TaskSet set) throws RejectedExecutionException {
         TaskSet next = set.next();
-        next.type(set.type());
         mQueue.add(next);
     }
 

@@ -2,12 +2,10 @@ package com.kescoode.android.yomo;
 
 import android.os.Process;
 
-import com.kescoode.android.yomo.toolbox.TaskSet;
-
 import java.util.concurrent.RejectedExecutionException;
 
 /**
- * 执行{@link com.kescoode.android.yomo.toolbox.TaskSet}的{@link java.lang.Runnable}
+ * 执行{@link TaskSet}的{@link java.lang.Runnable}
  *
  * @author Kesco Lin
  */
