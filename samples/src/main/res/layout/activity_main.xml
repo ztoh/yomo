@@ -13,11 +13,24 @@
         android:layout_gravity="center_horizontal"
         bind:text="{result}"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        bind:text="{progress}"/>
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         bind:text="{run}"
         bind:onClick="runTask"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        bind:text="{runTimer}"
+        bind:onClick="runTimer"/>
 
 </LinearLayout>

@@ -14,6 +14,7 @@ public class PresentationModel implements HasPresentationModelChangeSupport {
     private PresentationModelChangeSupport changeSupport;
     private static long index = 0L;
     private long result = 0L;
+    private long progress = 0L;
 
     public PresentationModel() {
         changeSupport = new PresentationModelChangeSupport(this);
@@ -25,6 +26,14 @@ public class PresentationModel implements HasPresentationModelChangeSupport {
 
     public String getRun() {
         return "运行";
+    }
+
+    public String getProgress() {
+        return "Progress: " + progress;
+    }
+
+    public String getRunTimer() {
+        return "允许Progress任务";
     }
 
     public void runTask() {
@@ -52,7 +61,6 @@ public class PresentationModel implements HasPresentationModelChangeSupport {
         TaskSet<Integer> next = new TaskSet<Integer>() {
             @Override
             public Integer background() throws Exception {
-//                throwFailed(new Exception("test"));
                 return 1000;
             }
         };
@@ -72,7 +80,30 @@ public class PresentationModel implements HasPresentationModelChangeSupport {
         next.delay(10000L);
         task.next(next);
         Yomo.add(task, this);
-//        task.cancel();
+    }
+
+    public void runTimer() {
+        TaskSet task = new TaskSet() {
+            @Override
+            public Object background() throws Exception {
+                int i = 0;
+                while (i < 60) {
+                    i++;
+                    Thread.sleep(500);
+                    progress = i;
+                    Yomo.updateProgress(this, progress, 60);
+                }
+                return super.background();
+            }
+        };
+        task.progress(new TaskSet.UiProgressCallBack() {
+            @Override
+            public void progress(long done, long total) {
+                Log.e("test", "" + done + ":" + total);
+                changeSupport.firePropertyChange("progress");
+            }
+        });
+        Yomo.add(task, this);
     }
 
     @Override

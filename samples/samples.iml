@@ -86,9 +86,9 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="appcompat-v7-21.0.3" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-21.0.3" level="project" />
-    <orderEntry type="library" exported="" name="yomo-0.1.0-SNAPSHOT" level="project" />
     <orderEntry type="library" exported="" name="support-v4-21.0.3" level="project" />
     <orderEntry type="library" exported="" name="robobinding-0.8.9-with-dependencies" level="project" />
+    <orderEntry type="module" module-name="library" exported="" />
   </component>
 </module>
 

@@ -45,6 +45,6 @@ dependencies {
     }
     apt "org.robobinding:codegen:0.8.9"
 
-//    compile project(':library')
-    compile 'com.kescoode:yomo:0.1.0-SNAPSHOT'
+    compile project(':library')
+//    compile 'com.kescoode:yomo:0.1.0-SNAPSHOT'
 }

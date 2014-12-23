@@ -16,7 +16,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 
     private final ThreadPoolExecutor mThreadPool;
     private final Set<TaskSet<?>> mCurruntTasks = new HashSet<TaskSet<?>>();
-    private Delivery mDelivery;
+    /* package */ Delivery mDelivery;
 
     private final Object mLock = new Object();
 
