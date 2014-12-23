@@ -26,4 +26,5 @@ import java.util.concurrent.RejectedExecutionException;
      */
     void postNext(TaskSet set) throws RejectedExecutionException;
 
+    void postProgress(TaskSet set, long done, long total);
 }

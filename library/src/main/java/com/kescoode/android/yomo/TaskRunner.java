@@ -5,7 +5,7 @@ import android.os.Process;
 import java.util.concurrent.RejectedExecutionException;
 
 /**
- * 执行{@link TaskSet}的{@link java.lang.Runnable}
+ * 执行{@link TaskSet}的{@link Runnable}
  *
  * @author Kesco Lin
  */
@@ -22,7 +22,7 @@ import java.util.concurrent.RejectedExecutionException;
 
     @Override
     public void run() {
-        android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+        Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
         mDelivery.postRemove(mTask);
 
         if (mTask.isCanceled()) {

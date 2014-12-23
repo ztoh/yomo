@@ -32,12 +32,17 @@ public class TaskSet<T> {
         void fail(YomoError error);
     }
 
+    public static interface UiProgressCallBack {
+        void progress(long done, long total);
+    }
+
     private TaskSet mNext = null;
     private volatile Future mControl = null;
     private PrepareTask mPrepareTask = null;
     private BackgroundTask<T> mBackgroundTask = null;
     private UiDoneCallBack<T> mDoneCallBack = null;
     private UiFailCallBack mFailCallBack = null;
+    private UiProgressCallBack mProgressCallBack = null;
 
     private long mDelayMillisecond = 0L;
     private volatile boolean mCanceled = false;
@@ -111,14 +116,6 @@ public class TaskSet<T> {
         mFailCallBack = callBack;
     }
 
-    public static final void throwFailed(Exception cause) throws Exception {
-        if (null == cause) {
-            throw new RuntimeException("Error thrown from user");
-        } else {
-            throw cause;
-        }
-    }
-
     /**
      * 返回Ui Thread的延迟
      */
@@ -131,7 +128,7 @@ public class TaskSet<T> {
     }
 
     /**
-     * 下一个执行{@link TaskSet}
+     * 下一个执行{@link com.kescoode.android.yomo.TaskSet}
      */
     public final void next(TaskSet next) {
         if (null == next) {
@@ -142,6 +139,19 @@ public class TaskSet<T> {
 
     /* package */ TaskSet next() {
         return mNext;
+    }
+
+    public final void progress(UiProgressCallBack callBack) {
+        if (null == callBack) {
+            throw new IllegalArgumentException("Callback can not be null!");
+        }
+        mProgressCallBack = callBack;
+    }
+
+    /* package */ void progress(long done, long total) {
+        if (null != mProgressCallBack) {
+            mProgressCallBack.progress(done, total);
+        }
     }
 
     /* package */ void control(Future future) {

@@ -14,7 +14,19 @@ public class Yomo {
         /* Empty */
     }
 
-    public static void add(TaskSet task,Object tag) {
-        QUEUE.add(task,tag);
+    public static void add(TaskSet task, Object tag) {
+        QUEUE.add(task, tag);
+    }
+
+    public static void updateProgress(TaskSet set, long done, long total) {
+        QUEUE.mDelivery.postProgress(set, done, total);
+    }
+
+    public static void faild(Exception cause) throws Exception {
+        if (null == cause) {
+            throw new RuntimeException("Error thrown from user");
+        } else {
+            throw cause;
+        }
     }
 }

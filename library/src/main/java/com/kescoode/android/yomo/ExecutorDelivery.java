@@ -7,7 +7,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionException;
 
 /**
- * {@link com.kescoode.android.yomo.Delivery}的实现
+ * {@link Delivery}的实现
  *
  * @author Kesco Lin
  */
@@ -73,6 +73,18 @@ import java.util.concurrent.RejectedExecutionException;
     public void postNext(TaskSet set) throws RejectedExecutionException {
         TaskSet next = set.next();
         mQueue.add(next, set.getTag());
+    }
+
+    @Override
+    public void postProgress(TaskSet set, final long done, final long total) {
+        mPostExecutor.execute(new DelayedRunner(set) {
+            @Override
+            public void run() {
+                if (!getTask().isCanceled()) {
+                    getTask().progress(done, total);
+                }
+            }
+        });
     }
 
     private abstract class DelayedRunner implements Runnable {
